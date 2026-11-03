@@ -39,7 +39,13 @@ import { THEME } from "@/lib/theme";
 
 const ROUTES: readonly NotificationRoute[] = ["action", "activity", "muted"];
 
-function RouteMark({ route, color }: { route: NotificationRoute; color: string }) {
+function RouteMark({
+  route,
+  color,
+}: {
+  route: NotificationRoute;
+  color: string;
+}) {
   if (route === "action") {
     return (
       <View className="size-4 items-center justify-center">
@@ -128,68 +134,86 @@ export default function NotificationsSettingsScreen() {
                     {t(`routing.kinds.${kind.key}.description`)}
                   </Text>
                 </View>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={t(`routing.kinds.${kind.key}.label`)}
-                      className="flex-row items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 active:bg-accent"
-                    >
-                      <RouteMark route={route} color={theme.mutedForeground} />
-                      <Text
-                        className={
-                          route === "muted"
-                            ? "text-sm text-muted-foreground"
-                            : "text-sm text-foreground"
-                        }
+                {kind.pinned ? (
+                  <View className="flex-row items-center gap-1.5 px-2.5 py-1.5">
+                    <Ionicons
+                      name="lock-closed"
+                      size={14}
+                      color={theme.mutedForeground}
+                    />
+                    <Text className="text-sm text-muted-foreground">
+                      {t("routing.pinned")}
+                    </Text>
+                  </View>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel={t(
+                          `routing.kinds.${kind.key}.label`,
+                        )}
+                        className="flex-row items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 active:bg-accent"
                       >
-                        {t(`routing.routes.${route}.label`)}
-                      </Text>
-                      <Ionicons
-                        name="chevron-down"
-                        size={14}
-                        color={theme.mutedForeground}
-                      />
-                    </Pressable>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-64 p-1">
-                    {ROUTES.map((value) => (
-                      <DropdownMenuItem
-                        key={value}
-                        className="items-start"
-                        onPress={() => {
-                          if (value !== route) {
-                            mutation.mutate(
-                              withNotificationRoute(preferences, kind, value),
-                            );
+                        <RouteMark
+                          route={route}
+                          color={theme.mutedForeground}
+                        />
+                        <Text
+                          className={
+                            route === "muted"
+                              ? "text-sm text-muted-foreground"
+                              : "text-sm text-foreground"
                           }
-                        }}
-                      >
-                        <View className="mt-0.5">
-                          <RouteMark
-                            route={value}
-                            color={theme.mutedForeground}
-                          />
-                        </View>
-                        <View className="flex-1">
-                          <Text className="text-sm">
-                            {t(`routing.routes.${value}.label`)}
-                          </Text>
-                          <Text className="text-xs text-muted-foreground">
-                            {t(`routing.routes.${value}.description`)}
-                          </Text>
-                        </View>
-                        {value === route ? (
-                          <Ionicons
-                            name="checkmark"
-                            size={16}
-                            color={theme.foreground}
-                          />
-                        ) : null}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                        >
+                          {t(`routing.routes.${route}.label`)}
+                        </Text>
+                        <Ionicons
+                          name="chevron-down"
+                          size={14}
+                          color={theme.mutedForeground}
+                        />
+                      </Pressable>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-64 p-1">
+                      {ROUTES.map((value) => (
+                        <DropdownMenuItem
+                          key={value}
+                          className="items-start"
+                          onPress={() => {
+                            if (value !== route) {
+                              mutation.mutate(
+                                withNotificationRoute(preferences, kind, value),
+                              );
+                            }
+                          }}
+                        >
+                          <View className="mt-0.5">
+                            <RouteMark
+                              route={value}
+                              color={theme.mutedForeground}
+                            />
+                          </View>
+                          <View className="flex-1">
+                            <Text className="text-sm">
+                              {t(`routing.routes.${value}.label`)}
+                            </Text>
+                            <Text className="text-xs text-muted-foreground">
+                              {t(`routing.routes.${value}.description`)}
+                            </Text>
+                          </View>
+                          {value === route ? (
+                            <Ionicons
+                              name="checkmark"
+                              size={16}
+                              color={theme.foreground}
+                            />
+                          ) : null}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </View>
               {!isLast ? <Separator /> : null}
             </View>

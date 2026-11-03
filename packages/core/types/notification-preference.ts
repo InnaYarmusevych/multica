@@ -7,7 +7,9 @@ export type NotificationRouteKey =
   | "status_changes"
   | "assignee_changes"
   | "updates"
-  | "agent_comments";
+  | "agent_comments"
+  | "app_confirmations"
+  | "app_connections";
 
 /** Where a routable kind lands: an Inbox section, or nowhere. */
 export type NotificationRoute = "action" | "activity" | "muted";

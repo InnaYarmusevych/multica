@@ -54,6 +54,14 @@ func TestRoute(t *testing.T) {
 		{"unroutable reaction", map[string]string{"comments": "muted"}, "reaction_added", member, SectionActivity},
 		{"unroutable review request", map[string]string{"assigned": "muted"}, "review_requested", member, SectionAction},
 		{"unknown value falls back to default", map[string]string{"status_changes": "loud"}, "status_changed", member, SectionActivity},
+
+		// App confirmations stop an agent until answered: never muted or moved.
+		{"default app confirmation", nil, "app_action_requested", agent, SectionAction},
+		{"muted app confirmation still delivers", map[string]string{"app_confirmations": "muted"}, "app_action_requested", agent, SectionAction},
+		{"app reminder cannot move to activity", map[string]string{"app_confirmations": "activity"}, "app_action_reminder", agent, SectionAction},
+		{"default connect request", nil, "app_connect_requested", agent, SectionAction},
+		{"connect request routed to activity", map[string]string{"app_connections": "activity"}, "app_connect_requested", agent, SectionActivity},
+		{"connect request muted", map[string]string{"app_connections": "muted"}, "app_connect_requested", agent, muted},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

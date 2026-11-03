@@ -46,6 +46,9 @@ var validRouteValues = map[string]bool{
 }
 
 func validNotifPreference(key, value string) (validKey, validValue bool) {
+	if inbox.IsPinnedRouteKey(key) {
+		return true, value == inbox.RouteDefault || value == inbox.RouteAction
+	}
 	if inbox.IsRouteKey(key) {
 		return true, validRouteValues[value]
 	}

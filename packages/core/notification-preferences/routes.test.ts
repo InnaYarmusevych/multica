@@ -30,6 +30,8 @@ describe("resolveNotificationRoute", () => {
       assignee_changes: "activity",
       updates: "activity",
       agent_comments: "activity",
+      app_confirmations: "action",
+      app_connections: "action",
     });
     expect(notificationRoutesAreDefault({ status_changes: "all" })).toBe(true);
   });
@@ -52,6 +54,12 @@ describe("resolveNotificationRoute", () => {
     expect(resolveNotificationRoute(prefs, kind("agent_comments"))).toBe("activity");
     expect(resolveNotificationRoute(prefs, kind("mentions"))).toBe("action");
     expect(resolveNotificationRoute({ assignments: "muted" }, kind("assignee_changes"))).toBe("muted");
+  });
+
+  it("never lets a stored choice move a pinned kind off its default", () => {
+    const prefs = { app_confirmations: "muted", app_connections: "muted" } as NotificationPreferences;
+    expect(resolveNotificationRoute(prefs, kind("app_confirmations"))).toBe("action");
+    expect(resolveNotificationRoute(prefs, kind("app_connections"))).toBe("muted");
   });
 });
 

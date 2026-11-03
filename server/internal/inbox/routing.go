@@ -25,6 +25,9 @@ type routeKind struct {
 	// Legacy is the pre-routing group whose "muted" still applies while Key
 	// is unset. Empty when the key itself predates routing.
 	Legacy string
+	// Pinned kinds always land in Default: an agent is stopped until the
+	// recipient answers, so the notification can be neither muted nor moved.
+	Pinned bool
 }
 
 // RouteKinds lists the routable kinds in the order settings render them.
@@ -37,6 +40,8 @@ var RouteKinds = []routeKind{
 	{Key: "assignee_changes", Default: SectionActivity, Legacy: "assignments"},
 	{Key: "updates", Default: SectionActivity},
 	{Key: "agent_comments", Default: SectionActivity, Legacy: "comments"},
+	{Key: "app_confirmations", Default: SectionAction, Pinned: true},
+	{Key: "app_connections", Default: SectionAction},
 }
 
 var routeKindByKey = func() map[string]routeKind {
@@ -70,6 +75,10 @@ func RouteKindKey(notifType string, actorType pgtype.Text) string {
 		return "assignee_changes"
 	case "priority_changed", "start_date_changed", "due_date_changed":
 		return "updates"
+	case "app_action_requested", "app_action_reminder":
+		return "app_confirmations"
+	case "app_connect_requested":
+		return "app_connections"
 	}
 	return ""
 }
@@ -80,6 +89,9 @@ func Route(prefs map[string]string, notifType string, actorType pgtype.Text) (se
 	kind, routable := routeKindByKey[RouteKindKey(notifType, actorType)]
 	if !routable {
 		return DefaultSection(notifType, actorType), true
+	}
+	if kind.Pinned {
+		return kind.Default, true
 	}
 	switch prefs[kind.Key] {
 	case RouteAction:
@@ -99,4 +111,9 @@ func Route(prefs map[string]string, notifType string, actorType pgtype.Text) (se
 func IsRouteKey(key string) bool {
 	_, ok := routeKindByKey[key]
 	return ok
+}
+
+// IsPinnedRouteKey reports whether key names a kind that cannot be rerouted.
+func IsPinnedRouteKey(key string) bool {
+	return routeKindByKey[key].Pinned
 }

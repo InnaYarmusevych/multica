@@ -120,7 +120,16 @@
       "agent_comments": {
         "label": "Agent comments",
         "description": "When an agent replies on an issue you follow"
+      },
+      "app_confirmations": {
+        "label": "App confirmations",
+        "description": "When an agent waits for you to approve an app action. Always in Action, because the agent is stopped until you answer."
+      },
+      "app_connections": {
+        "label": "App connection requests",
+        "description": "When an agent asks you to connect your account for an app"
       }
-    }
+    },
+    "pinned": "Always in Action"
   }
 }

@@ -120,7 +120,16 @@
       "agent_comments": {
         "label": "AI 代理評論",
         "description": "AI 代理在你訂閱的任務裡回覆時"
+      },
+      "app_confirmations": {
+        "label": "應用操作確認",
+        "description": "AI 代理等待你核准應用操作時。始終在「待處理」，因為你回應前 AI 代理會一直暫停。"
+      },
+      "app_connections": {
+        "label": "應用連線請求",
+        "description": "AI 代理請你為某個應用連線帳號時"
       }
-    }
+    },
+    "pinned": "始終在待處理"
   }
 }

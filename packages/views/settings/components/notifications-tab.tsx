@@ -13,7 +13,7 @@ import {
   type NotificationRouteKind,
 } from "@multica/core/notification-preferences/routes";
 import type { NotificationPreferences, NotificationRoute } from "@multica/core/types";
-import { BellOff, Eye, RotateCcw } from "@multica/ui/icons";
+import { BellOff, Eye, Lock, RotateCcw } from "@multica/ui/icons";
 import { Button } from "@multica/ui/components/ui/button";
 import {
   Select,
@@ -71,6 +71,22 @@ export function NotificationsTab() {
   const routeSelect = (kind: NotificationRouteKind) => {
     const route = resolveNotificationRoute(preferences, kind);
     const label = t(($) => $.notifications.kinds[kind.key].label);
+    if (kind.pinned) {
+      return (
+        <SettingsRow
+          key={kind.key}
+          anchor={kind.key}
+          label={label}
+          description={t(($) => $.notifications.kinds[kind.key].description)}
+          size="select"
+        >
+          <span className="flex h-8 items-center gap-2 px-2 text-body text-muted-foreground">
+            <Lock aria-hidden className="size-3.5" />
+            {t(($) => $.notifications.pinned)}
+          </span>
+        </SettingsRow>
+      );
+    }
     return (
       <SettingsRow
         key={kind.key}

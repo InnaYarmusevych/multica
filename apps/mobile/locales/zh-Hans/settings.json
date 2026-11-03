@@ -120,7 +120,16 @@
       "agent_comments": {
         "label": "智能体评论",
         "description": "智能体在你订阅的任务里回复时"
+      },
+      "app_confirmations": {
+        "label": "应用操作确认",
+        "description": "智能体等待你批准应用操作时。始终在「待处理」，因为你回应前智能体会一直暂停。"
+      },
+      "app_connections": {
+        "label": "应用连接请求",
+        "description": "智能体请你为某个应用连接账号时"
       }
-    }
+    },
+    "pinned": "始终在待处理"
   }
 }

@@ -10,6 +10,9 @@ export interface NotificationRouteKind {
   default: Exclude<NotificationRoute, "muted">;
   /** Pre-routing group whose "muted" still applies while `key` is unset. */
   legacy?: NotificationLegacyGroupKey;
+  /** Always lands in `default`: an agent is stopped until the recipient
+   * answers, so the server rejects any other route. */
+  pinned?: boolean;
 }
 
 /**
@@ -26,6 +29,8 @@ export const NOTIFICATION_ROUTE_KINDS: readonly NotificationRouteKind[] = [
   { key: "assignee_changes", default: "activity", legacy: "assignments" },
   { key: "updates", default: "activity" },
   { key: "agent_comments", default: "activity", legacy: "comments" },
+  { key: "app_confirmations", default: "action", pinned: true },
+  { key: "app_connections", default: "action" },
 ];
 
 function isRoute(value: unknown): value is NotificationRoute {
@@ -37,6 +42,7 @@ export function resolveNotificationRoute(
   preferences: NotificationPreferences,
   kind: NotificationRouteKind,
 ): NotificationRoute {
+  if (kind.pinned) return kind.default;
   const value = preferences[kind.key];
   if (isRoute(value)) return value;
   if (kind.legacy && preferences[kind.legacy] === "muted") return "muted";
